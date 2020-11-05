@@ -182,11 +182,13 @@ Inside your `/login` route, you can expect to receive the values, **email** and 
 
     - If the user doesn't exist, send a fail response to the user
     
-    - If the user does exist, we will proceed
+    - If the user does exist use `bcrypt.compare()`to compare the password with the hash in the database
+    
+    - If the password does not match, send a fail response to the user
 
 3. Import the `jwtIssuer` function from the `utils` folder
 
-4. If the user exists, use the `jwtIssuer` function to create a jwt token, and send this as a response to the user
+4. If the user exists, and the password matched, use the `jwtIssuer` function to create a jwt token, and send this as a response to the user
 
 5. Test your code
 

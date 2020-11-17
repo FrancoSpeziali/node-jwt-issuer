@@ -172,9 +172,9 @@ Where:
 
 ## Assignment 9 - Login the user
 
-In this assignment, we will create a route to login the user, and issue a JWT token
+In this assignment, we will create an endpoint to login the user, and issue a JWT token
 
-1. Create a route `/login` in `user.js`. This will be a `POST` route.
+1. Create the endpoint `/login` in `user.js`. This will be a `POST` route.
 
 Inside your `/login` route, you can expect to receive the values, **email** and **password** from `request.body`
 

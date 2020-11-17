@@ -49,7 +49,7 @@ You will be creating a mongoose schema
 
 1. Create the file `UserModel.js`
 
-2. Import mongoose & the UerSchema you just created
+2. Import mongoose & the UserSchema you just created
 
 3. Create a mongoose model based on the schema you imported
 

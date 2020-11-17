@@ -85,7 +85,7 @@ const router = express.Router();
 
 ## Assignment 7 - Register the user
 
-1. Create a route `/register` in `user.js`. This will be a `POST` route.
+1. Create the endpoint `/register` in `user.js`. This will be a `POST` route.
 
 Inside your `/register` route, you can expect to receive the values **name**, **email** and **password** from `request.body`
 

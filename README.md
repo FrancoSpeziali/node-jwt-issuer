@@ -148,7 +148,7 @@ const expiresIn = '1d';
 6. Inside this function use the following function to create a token:
 
     ```javascript
-    jsonwebtoken.sign(payload, 'secret')`;
+    jsonwebtoken.sign(payload, 'secret');
     ```
     
     Where:

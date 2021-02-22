@@ -6,18 +6,34 @@ In this assignment you will be expected to write a backend system which will iss
 
 This project includes some already prepared starter code. The following packages have already been specified:
 
-> "express": "^4.17.1",
-> "mongoose": "^5.10.11"
+> "express",
+> "mongoose"
 
 Please run `npm install` before starting
 
-## Assignments
+## What you will be doing
 
-## Assignment 1 - Create dotenv
+You will be creating a backend server which will create and sign JWT tokens for every user which logs in.
+
+For this, you will have to create an endpoint to 1) register the user (create new user), 2) login the user (verify the login details of the user) and 3) logout the user (invalidate the login credentials).
+
+During the login phase, your server will create and sign a JWT token which will be sent back to the user. Later we will store this JWT token in a `httpOnly` cookie.
+
+## Expectations
+
+You are expected to already have the following knowledge:
+- Node and express.js
+- How to run node files from the command line
+- MongoDB, Mongoose
+- How to create Mongoose schemas
+
+## Tasks
+
+## Task 1 - Create dotenv
 
 1. Create a `.env` file which will contain your secret keys for the server
 
-## Assignment 2 - prepare your server code
+## Task 2 - prepare your server code
 
 Setup a server in `server.js` with `express.js`
 
@@ -25,9 +41,9 @@ Setup a server in `server.js` with `express.js`
 
 2. Install & import the `cors` package and use the `cors()` middleware
 
-> Do not use port 3000 for your server
+> Do not use port 3000 for your server (this is used by create-react-app)
 
-## Assignment 3 - Prepare your Schema
+## Task 3 - Prepare your Schema
 
 You will be creating a mongoose schema
 
@@ -45,7 +61,7 @@ You will be creating a mongoose schema
 
 4. Export your schema
 
-## Assignment 4 - Prepare your Model
+## Task 4 - Prepare your Model
 
 1. Create the file `UserModel.js`
 
@@ -55,7 +71,7 @@ You will be creating a mongoose schema
 
 4. Export the model
 
-## Assignment 5 - Connect to your MongoDB server
+## Task 5 - Connect to your MongoDB server
 
 1. Use the `dotenv` package to load the `process.env` variables from your `.env` file
 
@@ -63,7 +79,7 @@ You will be creating a mongoose schema
 
 3. Check the connection
 
-## Assignment 6 - Setup the '/user' route
+## Task 6 - Setup the '/user' route
 
 1. Create a file `user.js` in a folder `routes`
 
@@ -83,7 +99,7 @@ const router = express.Router();
 
 6. Use `app.use()` to redirect all `/user` routes to the `router` variable you exported from `user.js`
 
-## Assignment 7 - Register the user
+## Task 7 - Register the user
 
 1. Create the endpoint `/register` in `user.js`. This will be a `POST` route.
 
@@ -118,7 +134,7 @@ npm i bcrypt
 
 8. Test your code
 
-## Assignment 8 - JWT Issuer
+## Task 8 - JWT Issuer
 
 1. Create a new file called `jwtIssuer.js` inside a folder called `utils`
 
@@ -133,12 +149,6 @@ npm i jsonwebtoken
 4. create a function called `jwtIssuer`
 
 This function should accept the `User` object
-
-5. Create the following variable:
-
-```javascript
-const expiresIn = '1d';
-```
 
 5. Create a variable `payload`. This should be an object with 2 keys:
 
@@ -156,21 +166,11 @@ const expiresIn = '1d';
     `payload` is an object you created in step 5
     `secret` is a string value of your choice
 
-7. The function should return an object:
-
-```javascript
-token: 'Bearer ' + signedToken,
-expiresIn
-```
-
-Where:
-
-`signedToken` is the token you created in step 6
-`expiresIn` is the variable you created in step 5
+7. The function should return the signed token:
 
 8. Export this function
 
-## Assignment 9 - Login the user
+## Task 9 - Login the user
 
 In this assignment, we will create an endpoint to login the user, and issue a JWT token
 
@@ -192,7 +192,72 @@ Inside your `/login` route, you can expect to receive the values, **email** and 
 
 5. Test your code
 
-## Assignment 10 - Create a React frontend
+## Task 10 - Setting the httpOnly cookie
+
+It's very important to keep the JWT token as secure as possible. The token is a portable object of data which authorises a particular user to the server. If a hacker were able to get hold of this, they could use it to access information they shouldn't.
+
+A `httpOnly` cookie is controlled by the backend, but is handled by the browser. This means the frontend JavaScript can not access it, making it harder for hackers to get hold of.
+
+There are other ways to secure a JWT token, but we will focus on this approach for now.
+
+1. Modify your `/login` route, so that your response also uses the `express.js` `cookie()` method.
+
+The `cookie()` method takes 3 parameters, `name`, `value` and `options`.
+
+- For `name` use the string `jwt`
+- For `value` pass in your JWT token
+- For `options`, use the object:
+```javascript
+{
+    httpOnly: true,
+    sameSite: 'lax'
+}
+```
+
+This will instruct the client (browser) to set the JWT token as a `httpOnly` cookie
+
+Once the user logs in with this route, all future requests (with the `credentials: 'include'` option) will include this `httpOnly` cookie.
+
+Example:
+
+```javascript
+ response
+   .cookie("jwt", token, {
+     httpOnly: true,
+     sameSite: "lax",
+   })
+```
+
+Where `token` is your JWT token.
+
+Research: [Express.js response.cookie() method [en]](http://expressjs.com/en/4x/api.html#res.cookie)
+
+## Task 11 - Logout
+
+We can logout the user by invalidating the JWT token. There are 2 ways we can do this:
+
+   1) Setting an expiry date on the token when we generate it
+   2) Create an endpoint which will run the `express.js` `clearCookie()` method
+
+We will focus on point 2)
+
+1. Create the endpoint `/logout` in `user.js`. This will be a `GET` route.
+
+2. In your response, use the `clearCookie()` method to remove the `httpOnly` cookie we set when the user logs in. You must use the same options that we use when setting the cookie.
+
+Example:
+
+```javascript
+ response
+   .clearCookie("jwt", {
+     httpOnly: true,
+     sameSite: "lax",
+   })
+```
+
+Research: [Express.js response.clearCookie() method [en]](https://expressjs.com/en/4x/api.html#res.clearCookie)
+
+## Task 12 - Create a React frontend
 
 In this assignment you will create a React frontend which will have a `register` and `login` form
 
@@ -206,3 +271,5 @@ In this assignment you will create a React frontend which will have a `register`
 
 `email`
 `password`
+
+For the login, it is important that we use the `credentials: 'include'` option when using our `fetch` request (`withCredentials: true` if you are using Axios), otherwise the `httpOnly` cookie can not be set.
